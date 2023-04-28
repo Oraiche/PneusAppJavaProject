@@ -8,7 +8,9 @@ import com.oraiche.pneus.entities.Vente;
 import com.oraiche.pneus.repositories.PersonneRepo;
 import com.oraiche.pneus.repositories.PneuRepository;
 import com.oraiche.pneus.repositories.VenteRepo;
+import com.oraiche.pneus.services.ClientService;
 import com.oraiche.pneus.services.GarageImp;
+import com.oraiche.pneus.services.VenteService;
 import org.apache.catalina.LifecycleState;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -28,7 +30,7 @@ public class PneusApplication {
         SpringApplication.run(PneusApplication.class, args);
     }
     @Bean
-    CommandLineRunner star(GarageImp garageService, PneuRepository pneuRepository, PersonneRepo personneRepo, VenteRepo venteRepo)
+    CommandLineRunner star(GarageImp garageService, ClientService clientService, VenteRepo venteRepo, VenteService venteService)
     {
 
         return args -> { garageService.savePneu(new Pneu(14,175,70,"Lassa",600));
@@ -53,30 +55,12 @@ public class PneusApplication {
                          garageService.savePneu(new Pneu(16,165,60,"Lassa",890));
                          garageService.savePneu(new Pneu(14,175,70,"Amine'",790));
                          garageService.savePneu(new Pneu(15,185,65,"Lassa",470));
-                         garageService.savePneu(new Pneu(15,165,70,"Amine",300));
-
-            List<Pneu> listPneu= new ArrayList<>();
-            listPneu.add(new Pneu(15,185,65,"StarMax",540));
-            listPneu.add(new Pneu(14,175,70,"Amine'",790));
-
-            Client client1=new Client();
-            client1.setNom("Mohamemd");
-            client1.setPrenom("Oraiche");
-            client1.setAddress("23 ANOUAR SIDI BENNOUR");
-            client1.setTelephone("0659637198");
-            client1.setTypePayement(TypePayement.ESPECE);
-            personneRepo.save(client1);
+                         garageService.savePneu(new Pneu(15,165,70,"Amine",300));List<Pneu> list=garageService.findPneusByMarque("Amine");
 
 
 
-            Vente vente1=new Vente();
-            vente1.setDateVente(new Date());
-            vente1.setPneusVendus(listPneu);
-            vente1.setClientConcerneParVente(client1);
-            vente1.setPrixTotalVente(45500);
+            venteService.setPneusToVent("Amine");
 
-
-            venteRepo.save(vente1);
 
 
             System.out.println(garageService.findPneuById(1L).taille());
@@ -86,10 +70,6 @@ public class PneusApplication {
             System.out.println(pneu.getStock());
             System.out.println(pneu.getPrixVente());
             System.out.println(pneu.getPrixAchat());
-
-            System.out.println(garageService.prixPneu(14,175,"Lassa"));
-
-
         };
 
     }

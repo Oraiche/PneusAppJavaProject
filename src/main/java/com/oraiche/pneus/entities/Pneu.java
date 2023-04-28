@@ -1,5 +1,6 @@
 package com.oraiche.pneus.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +19,8 @@ public class Pneu {
     private double prixAchat;
     private String madeIn;
     private int stock;
+
+    @JsonIgnore
     @ManyToOne
     private Vente vente;
     public Pneu(int largeur,int hauteur,int diametre,String marque,double prix)

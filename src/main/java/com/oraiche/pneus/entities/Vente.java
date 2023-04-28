@@ -1,5 +1,6 @@
 package com.oraiche.pneus.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,4 +23,11 @@ public class Vente {
     private Date dateVente;
     private double prixTotalVente;
 
+    public void setPneusVendus(List<Pneu> pneuList)
+    {
+        this.pneusVendus=pneuList;
+        for (Pneu p:pneuList) {
+            p.setVente(this);
+        }
+    }
 }

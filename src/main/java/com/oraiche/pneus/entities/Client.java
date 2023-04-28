@@ -1,5 +1,6 @@
 package com.oraiche.pneus.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.oraiche.pneus.Enums.TypePayement;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.Date;
 @Entity
 @DiscriminatorValue("Client")
 public class Client extends Personne{
+      @JsonIgnore
       @OneToOne(mappedBy = "clientConcerneParVente")
       private Vente vente;
 

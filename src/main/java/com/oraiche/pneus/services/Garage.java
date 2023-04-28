@@ -1,7 +1,6 @@
 package com.oraiche.pneus.services;
 
 import com.oraiche.pneus.entities.Pneu;
-import com.oraiche.pneus.repositories.PneuRepository;
 
 import java.util.List;
 import java.util.Map;
@@ -10,6 +9,7 @@ public interface Garage {
 
     Pneu savePneu(Pneu pneu);
     int totalNumbPneus();
+    double prixTotalPneus(List<Pneu> pneus);
     double prixPneu(int largeur,int hauteur,String marque);
     int compterPneusByMarqueAndLargeur(String marque, int largeur);
 
@@ -21,7 +21,8 @@ public interface Garage {
     Pneu findPneuById(Long id);
     int compteByMarque(String marque);
     int compteByLargeur(int largeur);
-    Map<String,Double> prix(int largeur);
+    Map<String,List<Double>> prix(int largeur);
+    Map<String, List<Double>> AffichePneus(List<Pneu> pneuList);
     double somme(int largeur);
 
 
