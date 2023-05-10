@@ -3,10 +3,11 @@ package com.oraiche.pneus.services;
 import com.oraiche.pneus.entities.Pneu;
 import com.oraiche.pneus.exceptions.PneuNotFoundException;
 import com.oraiche.pneus.repositories.PneuRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -24,19 +25,10 @@ public class GarageImp implements Garage{
         return pneu;
 
     }
-     List<Pneu> searchPneus(int largueur, String marque)
-     {
-         return pneuRepository.findByMarqueAndLargeur(marque,largueur);
-     }
+
     @Override
     public int totalNumbPneus() {
         return pneuRepository.findAll().size();
-    }
-
-    @Override
-    public double prixTotalPneus(List<Pneu> pneus) {
-        double sum = pneus.stream().map(Pneu::getPrixVente).mapToDouble(value -> value).sum();
-        return sum;
     }
 
     @Override
@@ -65,7 +57,8 @@ public class GarageImp implements Garage{
 
     @Override
     public Pneu addPneu(Pneu pneu) {
-        return pneuRepository.save(pneu);
+        Pneu savedPneu = pneuRepository.save(pneu);
+        return savedPneu;
     }
 
     @Override
@@ -81,13 +74,13 @@ public class GarageImp implements Garage{
     @Override
     public Pneu findPneuById(Long id) {
 
-        return pneuRepository.findById(id).orElseThrow(PneuNotFoundException::new);
+        return pneuRepository.findById(id).get();
     }
 
     @Override
     public int compteByMarque(String marque) {
-
-        return pneuRepository.findByMarque(marque).size();
+        int nomber =pneuRepository.findByMarque(marque).size();
+        return nomber;
     }
 
     @Override
@@ -96,28 +89,24 @@ public class GarageImp implements Garage{
     }
 
     @Override
-    public Map<String,List<Double>> prix(int largeur) {
-
-        Map<String, List<Double>> collect = pneuRepository.findByLargeur(largeur)
-                .stream()
-                .collect(Collectors.groupingBy(Pneu::getMarque, Collectors.mapping(r -> r.getPrixVente(), Collectors.toList())));
-
-        return collect;
+    public Map<String,Double> prix(int largeur) {
+        Map<String,Double> prixMarque=new HashMap<String,Double>();
+        List<Pneu> listP=pneuRepository.findByLargeur(largeur);
+        for(Pneu p:listP) {
+            prixMarque.put(p.getMarque(),p.getPrixVente());
+        }
+        return prixMarque ;
     }
 
     @Override
-    public Map<String, List<Double>> AffichePneus(List<Pneu> pneuList) {
-
-        return pneuList.stream().collect(Collectors.groupingBy(Pneu::getMarque, Collectors.mapping(Pneu::getPrixVente, Collectors.toList())));
-  }
-
-
-    @Override
     public double somme(int largeur) {
+        double s=0;
+        List<Double> listPrix=pneuRepository.findByLargeur(largeur).stream().map(p->p.getPrixVente()).collect(Collectors.toList());
+        for (double prix:listPrix) {
+            s=s+prix;
+        }
 
-        return pneuRepository.findByLargeur(largeur).stream().mapToDouble(Pneu::getPrixVente).reduce(0, Double::sum);
-
-
+        return s;
     }
 
 
