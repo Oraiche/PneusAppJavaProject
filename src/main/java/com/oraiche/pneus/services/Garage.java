@@ -21,7 +21,7 @@ public interface Garage {
     Pneu findPneuById(Long id);
     int compteByMarque(String marque);
     int compteByLargeur(int largeur);
-    Map<String,List<Double>> prix(int largeur);
+    Map<String, List<Double>> prix(int largeur);
     Map<String, List<Double>> AffichePneus(List<Pneu> pneuList);
     double somme(int largeur);
 

@@ -32,6 +32,12 @@ public class GarageImp implements Garage{
     }
 
     @Override
+    public double prixTotalPneus(List<Pneu> pneus) {
+        double sum = pneus.stream().map(Pneu::getPrixVente).mapToDouble(value -> value).sum();
+        return sum;
+    }
+
+    @Override
     public double prixPneu(int largeur, int hauteur, String marque) throws PneuNotFoundException {
          Pneu p=pneuRepository.findFirstByLargeurAndHauteurAndMarque(largeur,hauteur,marque);
          if(p==null) throw  new PneuNotFoundException("pneu not Found");
@@ -89,13 +95,19 @@ public class GarageImp implements Garage{
     }
 
     @Override
-    public Map<String,Double> prix(int largeur) {
-        Map<String,Double> prixMarque=new HashMap<String,Double>();
-        List<Pneu> listP=pneuRepository.findByLargeur(largeur);
-        for(Pneu p:listP) {
-            prixMarque.put(p.getMarque(),p.getPrixVente());
-        }
-        return prixMarque ;
+    public Map<String,List<Double>> prix(int largeur) {
+
+        Map<String, List<Double>> collect = pneuRepository.findByLargeur(largeur)
+                .stream()
+                .collect(Collectors.groupingBy(Pneu::getMarque, Collectors.mapping(r -> r.getPrixVente(), Collectors.toList())));
+
+        return collect;
+    }
+
+    @Override
+    public Map<String, List<Double>> AffichePneus(List<Pneu> pneuList) {
+
+        return pneuList.stream().collect(Collectors.groupingBy(Pneu::getMarque, Collectors.mapping(Pneu::getPrixVente, Collectors.toList())));
     }
 
     @Override
